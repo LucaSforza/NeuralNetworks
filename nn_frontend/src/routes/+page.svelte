@@ -9,38 +9,46 @@
 
   import "@xyflow/svelte/dist/style.css";
 
-  // SVELTE 5: Usiamo $state al posto di writable
-  let nodes = $state([]);
-  let edges = $state([]);
+  import { Diagram } from "$lib/utils.svelte";
 
-  let layerCounter = 1;
-  const generateId = () => `layer_${layerCounter++}`;
+  // SVELTE 5: Usiamo $state al posto di writable
+  // let nodes = $state([]);
+  // let edges = $state([]);
+  //
+  // let layerCounter = 1;
+  // const generateId = () => `layer_${layerCounter++}`;
+
+  let d = new Diagram();
 
   // --- FUNZIONI CORE ---
 
   function addLayer() {
-    const newNode = {
-      id: generateId(),
-      type: "default",
-      position: { x: Math.random() * 250, y: Math.random() * 250 },
-      data: { label: `Layer ${layerCounter - 1}` },
-    };
-    // In Svelte 5 possiamo riassegnare direttamente l'array
-    nodes = [...nodes, newNode];
+    // const newNode = new Layer(`Layer ${layerCounter - 1}`);
+    // layerCounter++;
+    // const newNode = {
+    //   id: generateId(),
+    //   type: "default",
+    //   position: { x: Math.random() * 250, y: Math.random() * 250 },
+    //   data: { label: `Layer ${layerCounter - 1}` },
+    // };
+    // // In Svelte 5 possiamo riassegnare direttamente l'array
+    // nodes = [...nodes, newNode];
+    d.addLayer();
   }
 
   // SVELTE 5: I parametri degli eventi vengono passati direttamente
   function onconnect(connection) {
-    edges = addEdge(connection, edges);
+    // edges = addEdge(connection, edges);
   }
 
   function exportToJson() {
     // Rimuoviamo il prefisso '$' usato per i writable
     const flowState = {
-      nodes: nodes,
-      edges: edges,
+      nodes: d.nodes,
+      edges: d.edges,
     };
     const jsonString = JSON.stringify(flowState, null, 2);
+    // TODO: salva in un file
     console.log("JSON Esportato:", jsonString);
     alert("JSON generato! Guarda la console.");
     return jsonString;
@@ -49,12 +57,14 @@
   function importFromJson(jsonString) {
     try {
       const parsedData = JSON.parse(jsonString);
-      nodes = parsedData.nodes || [];
-      edges = parsedData.edges || [];
+      d.nodes = parsedData.nodes || [];
+      d.edges = parsedData.edges || [];
 
-      if (nodes.length > 0) {
-        const ids = nodes.map((n) => parseInt(n.id.replace("layer_", "")) || 0);
-        layerCounter = Math.max(...ids) + 1;
+      if (d.nodes.length > 0) {
+        const ids = d.nodes.map(
+          (n) => parseInt(n.id.replace("node_", "")) || 0,
+        );
+        VisualizeNode.counter = Math.max(...ids) + 1;
       }
     } catch (error) {
       console.error("Errore durante il parsing del JSON:", error);
@@ -77,7 +87,7 @@
   </div>
 
   <div class="flow-wrapper">
-    <SvelteFlow bind:nodes bind:edges {onconnect} fitView>
+    <SvelteFlow bind:nodes={d.nodes} bind:edges={d.edges} {onconnect} fitView>
       <Controls />
       <Background variant={BackgroundVariant.Dots} />
     </SvelteFlow>
