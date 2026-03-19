@@ -6,14 +6,34 @@
   import { Handle, Position, type NodeProps } from "@xyflow/svelte";
   let { id, data }: NodeProps = $props();
   // Use $derived so 'l' updates if 'data.enode' changes
-  let l = $derived(data.enode); // Questo è il modello di Layer.
+  let l: Layer = $derived(data.enode); // Questo è il modello di Layer.
+
+  function handleInternalClick() {
+    console.log(`Node ${id} was clicked!`);
+  }
+
+  // Add a keyboard handler for accessibility
+  function handleKeyDown(event: KeyboardEvent) {
+    // Trigger the click action if the user presses Enter or Space
+    if (event.key === "Enter" || event.key === " ") {
+      // Prevent default scrolling when hitting Space
+      event.preventDefault();
+      handleInternalClick();
+    }
+  }
 </script>
 
-<div class="custom-node">
+<div
+  class="custom-node"
+  onclick={handleInternalClick}
+  onkeydown={handleKeyDown}
+  role="button"
+  tabindex="0"
+>
   <Handle type="target" position={Position.Top} />
 
   <div class="node-label">
-    {data.label}
+    {l.name}
   </div>
 
   <Handle type="source" position={Position.Bottom} />

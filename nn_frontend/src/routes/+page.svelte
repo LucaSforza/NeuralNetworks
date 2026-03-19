@@ -78,6 +78,11 @@
     const dummyJson = `{"nodes":[{"id":"layer_1","type":"default","position":{"x":100,"y":100},"data":{"label":"Input Layer"}}],"edges":[]}`;
     importFromJson(dummyJson);
   }
+
+  // GESTIONE DELLA PAGINA
+  import SLayer from "../lib/components/SLayer.svelte";
+
+  const nodeTypes = { layer: SLayer };
 </script>
 
 <div class="app-container">
@@ -89,7 +94,7 @@
   </div>
 
   <div class="flow-wrapper">
-    <SvelteFlow bind:nodes={d.nodes} bind:edges={d.edges} {onconnect} fitView>
+    <SvelteFlow bind:nodes={d.nodes} bind:edges={d.edges} {nodeTypes} fitView>
       <Controls />
       <Background variant={BackgroundVariant.Dots} />
     </SvelteFlow>

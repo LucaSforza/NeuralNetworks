@@ -23,13 +23,14 @@ class Configuration extends ENode { }
 
 
 
-class Layer extends ENode {
+export class Layer extends ENode {
 
   private static counter: number = 0
   // TODO: aggiungere vincolo di unicità
   public name: string
 
   public next_layers: Array<Layer>
+
 
   constructor(name: string | null = null) {
     super();
@@ -65,10 +66,11 @@ export class VisualizeNode {
   // Tell TS this satisfies SvelteFlow's generic data requirement
   public data: Record<string, any>;
 
-  constructor(x: number, y: number, enode: ENode) {
+  public type: string
+  constructor(x: number, y: number, type: string, enode: ENode) {
     // 1. Assign position as a plain object
     this.position = { x, y };
-
+    this.type = type;
     this.id = `node_` + (VisualizeNode.counter++);
 
     // 2. Wrap your ENode inside a standard object. 
@@ -95,7 +97,7 @@ export class Diagram {
 
   public addLayer() {
     const l = new Layer();
-    const newNode = new VisualizeNode(Math.random() * 100, Math.random() * 100, l);
+    const newNode = new VisualizeNode(Math.random() * 100, Math.random() * 100, "layer", l);
     this.nodes = [...this.nodes, newNode];
   }
 
