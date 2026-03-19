@@ -9,7 +9,7 @@
 
   import "@xyflow/svelte/dist/style.css";
 
-  import { Diagram } from "$lib/utils.svelte";
+  import { Diagram, VisualizeNode } from "$lib/utils.svelte";
 
   // SVELTE 5: Usiamo $state al posto di writable
   // let nodes = $state([]);

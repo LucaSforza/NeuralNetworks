@@ -19,30 +19,7 @@ class ENode {
 
 }
 
-class Configuration extends ENode { }
 
-class VisualizeNode {
-  public static counter: number = 0;
-  public id: string;
-  // Use SvelteFlow's expected structure for position
-  public position: { x: number; y: number };
-  // Tell TS this satisfies SvelteFlow's generic data requirement
-  public data: Record<string, any>;
-
-  constructor(x: number, y: number, enode: ENode) {
-    // 1. Assign position as a plain object
-    this.position = { x, y };
-
-    this.id = `node_` + (VisualizeNode.counter++);
-
-    // 2. Wrap your ENode inside a standard object. 
-    // We can also add a 'label' so SvelteFlow's default nodes have something to display!
-    this.data = {
-      enode: enode,
-      label: enode instanceof Layer ? enode.name : "Node"
-    };
-  }
-}
 
 class Layer extends ENode {
 
@@ -73,6 +50,33 @@ class Layer extends ENode {
   }
 }
 
+class Initial {
+
+}
+
+
+export class VisualizeNode {
+  public static counter: number = 0;
+  public id: string;
+  // Use SvelteFlow's expected structure for position
+  public position: { x: number; y: number };
+  // Tell TS this satisfies SvelteFlow's generic data requirement
+  public data: Record<string, any>;
+
+  constructor(x: number, y: number, enode: ENode) {
+    // 1. Assign position as a plain object
+    this.position = { x, y };
+
+    this.id = `node_` + (VisualizeNode.counter++);
+
+    // 2. Wrap your ENode inside a standard object. 
+    // We can also add a 'label' so SvelteFlow's default nodes have something to display!
+    this.data = {
+      enode: enode,
+      label: enode instanceof Layer ? enode.name : "Node"
+    };
+  }
+}
 
 export class Diagram {
   public nodes: Array<VisualizeNode> = $state([]);
@@ -85,5 +89,10 @@ export class Diagram {
     const l = new Layer();
     const newNode = new VisualizeNode(Math.random() * 100, Math.random() * 100, l);
     this.nodes = [...this.nodes, newNode];
+  }
+
+  public addConnection() {
+    // aggiungi in self.edges  la connesion per avere la visuliazzazione
+    // aggiungi la connesione dei layer
   }
 }
