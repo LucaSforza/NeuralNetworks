@@ -2,11 +2,12 @@
 </script>
 
 <script lang="ts">
-  import { Layer } from "$lib/utils.svelte";
+  import { Layer, ENode } from "$lib/utils.svelte";
   import { Handle, Position, type NodeProps } from "@xyflow/svelte";
-  let { id, data }: NodeProps = $props();
+  let { id, data, selected }: NodeProps = $props();
   // Use $derived so 'l' updates if 'data.enode' changes
-  let l: Layer = $derived(data.enode); // Questo è il modello di Layer.
+  // TODO: Capire se e' possibile passare solo dati specifici dentro data invece che l'intera istanza
+  let l: Layer = $derived(data.enode as Layer);
 
   function handleInternalClick() {
     console.log(`Node ${id} was clicked!`);
@@ -25,6 +26,7 @@
 
 <div
   class="custom-node"
+  class:selected={selected}
   onclick={handleInternalClick}
   onkeydown={handleKeyDown}
   role="button"
@@ -54,5 +56,10 @@
   .node-label {
     font-weight: bold;
     color: #333;
+  }
+
+  /* Style for when the node is selected */
+  .custom-node.selected {
+    border-color: #22c55e;
   }
 </style>
