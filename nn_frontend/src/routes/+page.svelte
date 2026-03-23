@@ -42,13 +42,13 @@
   function deleteSelectedNode() {
     if (selectedId) {
       d.deleteNode(selectedId);
-      
-      selectedId = null; 
+
+      selectedId = null;
     }
   }
 
   // SVELTE 5: I parametri degli eventi vengono passati direttamente
-  function onconnect(connection : any) {
+  function onconnect(connection: any) {
     // TODO: use addEdge inside addConnection
     // edges = addEdge(connection, edges);
     d.addConnection(connection);
@@ -65,8 +65,8 @@
   function exportToJson() {
     // Rimuoviamo il prefisso '$' usato per i writable
     const flowState = {
-      nodes: d.nodes,
-      edges: d.edges,
+      model: ENode.allNodes,
+      view: { nodes: d.nodes, edges: d.edges },
     };
     const jsonString = JSON.stringify(flowState, null, 2);
     // TODO: salva in un file
@@ -81,8 +81,8 @@
       d.nodes = parsedData.nodes || [];
       d.edges = parsedData.edges || [];
 
-      if (d.nodes.length > 0) { 
-        const ids = d.nodes.map((n) => parseInt(n.id.replace("Node_", ""))) 
+      if (d.nodes.length > 0) {
+        const ids = d.nodes.map((n) => parseInt(n.id.replace("Node_", "")));
         ENode.counter = Math.max(...ids) + 1;
       }
     } catch (error) {
@@ -105,7 +105,11 @@
 <div class="app-container">
   <div class="toolbar">
     <button onclick={addLayer}>➕ Aggiungi Layer</button>
-    <button onclick={deleteSelectedNode} disabled={!selectedId} class:danger={selectedId !== null}>❌ Elimina</button>
+    <button
+      onclick={deleteSelectedNode}
+      disabled={!selectedId}
+      class:danger={selectedId !== null}>❌ Elimina</button
+    >
     <div class="divider"></div>
     <button onclick={exportToJson}>💾 Esporta JSON</button>
     <button onclick={testImport}>📂 Testa Import JSON</button>
@@ -113,12 +117,12 @@
 
   <div class="flow-wrapper">
     <SvelteFlow
-    bind:nodes={d.nodes}
-    bind:edges={d.edges}
-    {nodeTypes}
-    fitView
-    onnodeclick={handleNodeClick}
-    onpaneclick={handlePaneClick}
+      bind:nodes={d.nodes}
+      bind:edges={d.edges}
+      {nodeTypes}
+      fitView
+      onnodeclick={handleNodeClick}
+      onpaneclick={handlePaneClick}
     >
       <Controls />
       <Background variant={BackgroundVariant.Dots} />
@@ -172,7 +176,7 @@
     color: #dc2626;
     /*border-color: #dc2626;*/
   }
-  
+
   /* When the delete button is enabled and hovered */
   button.danger:hover {
     background: #fef2f2;

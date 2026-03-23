@@ -7,7 +7,7 @@
   let { id, data, selected }: NodeProps = $props();
   // Use $derived so 'l' updates if 'data.enode' changes
   // TODO: Capire se e' possibile passare solo dati specifici dentro data invece che l'intera istanza
-  let l: Layer = $derived(data.enode as Layer);
+  let l: Layer = $derived(ENode.fromId(data.enode as string)) as Layer;
 
   function handleInternalClick() {
     console.log(`Node ${id} was clicked!`);
@@ -26,7 +26,7 @@
 
 <div
   class="custom-node"
-  class:selected={selected}
+  class:selected
   onclick={handleInternalClick}
   onkeydown={handleKeyDown}
   role="button"

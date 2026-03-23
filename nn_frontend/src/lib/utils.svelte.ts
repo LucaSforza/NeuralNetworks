@@ -12,22 +12,43 @@ class Hyperparameter {
   }
 }
 
-export class ENode {
+export abstract class ENode {
+
+  public static counter: number = 0;
+  public static allNodes: Record<string, ENode> = {};
+
+  public id: string;
+
+  constructor() {
+    this.id = "ENode_" + ENode.counter++;
+    if (ENode.allNodes[this.id] !== undefined) throw Error("node with id " + this.id + "exists");
+    ENode.allNodes[this.id] = this;
+  }
+
+  public static fromId(id: string): ENode {
+    return ENode.allNodes[id];
+  }
+
+  abstract getType(): string;
+
+}
+
+export class VNode {
   public static counter: number = 0;
   public id: string;
   public position: { x: number; y: number };
   public data: Record<string, any>;
   public type: string
 
-  constructor(x: number | null=null, y: number | null=null) {
+  constructor(node: ENode, x: number | null = null, y: number | null = null) {
     if (x === null || y === null) {
       x = Math.random() * 100;
       y = Math.random() * 100;
     }
     this.position = { x, y };
-    this.id = "Node_" + ENode.counter++;
-    this.data = {enode: this};
-    this.type = "enode";
+    this.id = "Node_" + VNode.counter++;
+    this.data = { enode: node.id };
+    this.type = node.getType();
   }
 }
 
@@ -36,14 +57,13 @@ export class Layer extends ENode {
   public name: string
   private hyperparameters: Array<Hyperparameter>
 
-  constructor(name: string | null = null, x: number | null=null, y: number | null=null) {
-    super(x, y);
+  constructor(name: string | null = null) {
+    super();
     Layer.instances++;
     if (name === null) {
       name = "layer_" + (Layer.instances);
     }
     this.name = name;
-    this.type = "layer";
     // TODO: La mia idea e' avere un file json che rappresenta una serie di
     // Layer comuni che noi forniamo agli utenti (inclusi i rispettivi hyperparameters)
     // cosi l'utente puo aggiungere layer che noi non abbiamo implementato.
@@ -51,10 +71,17 @@ export class Layer extends ENode {
     // hyperparameters e inizializzarli con un valore di default.
     this.hyperparameters = [];
   }
+
+  public getType(): string {
+    return "layer";
+  }
 }
 
+import { addEdge } from "@xyflow/svelte";
+
+
 export class Diagram {
-  public nodes: Array<ENode> = $state([]);
+  public nodes: Array<VNode> = $state([]);
   public edges: Array<any> = $state([]);
 
   constructor() {
@@ -62,15 +89,16 @@ export class Diagram {
 
   public addLayer() {
     const l = new Layer();
-    this.nodes = [...this.nodes, l];
+    const n = new VNode(l);
+    this.nodes = [...this.nodes, n];
   }
 
   public addConnection(conn: any) {
     console.log(conn.valueOf());
-    this.edges = [...this.edges, conn];
+    addEdge(conn, this.edges);
   }
 
-  public deleteNode(id: string) {    
+  public deleteNode(id: string) {
     this.nodes = this.nodes.filter(node => node.id !== id);
     this.edges = this.edges.filter(edge => edge.source !== id && edge.target !== id);
   }
