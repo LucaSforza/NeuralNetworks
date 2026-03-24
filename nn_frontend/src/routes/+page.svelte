@@ -65,7 +65,7 @@
     // Rimuoviamo il prefisso '$' usato per i writable
     console.log(ENode.allNodes);
     const flowState = {
-      model: Array.from(ENode.allNodes.entries()),
+      model: Object.fromEntries(ENode.allNodes),
       view: { nodes: d.nodes, edges: d.edges },
     };
     const jsonString = JSON.stringify(flowState, null, 2);
