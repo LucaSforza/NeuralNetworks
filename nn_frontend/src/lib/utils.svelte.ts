@@ -54,10 +54,15 @@ export abstract class ENode {
 }
 
 class Stereotype {
-  public expr: string;
+  public file_path: string;
 
-  constructor(expr: string) {
-    this.expr = expr;
+  constructor(file_path: string) {
+    this.file_path = file_path;
+  }
+
+  getExpr(): string {
+    // TODO: ritorna il contenuto del file
+    return "";
   }
 }
 

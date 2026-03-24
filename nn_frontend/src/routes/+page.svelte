@@ -63,8 +63,9 @@
 
   function exportToJson() {
     // Rimuoviamo il prefisso '$' usato per i writable
+    console.log(ENode.allNodes);
     const flowState = {
-      model: ENode.allNodes,
+      model: Array.from(ENode.allNodes.entries()),
       view: { nodes: d.nodes, edges: d.edges },
     };
     const jsonString = JSON.stringify(flowState, null, 2);
