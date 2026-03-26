@@ -1,0 +1,6 @@
+{
+  "category": "Sigmoid",
+  "pythonClassName": "nn.Sigmoid",
+  "expr": "",
+  "params": {}
+}

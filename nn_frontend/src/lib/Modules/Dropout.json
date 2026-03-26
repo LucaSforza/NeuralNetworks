@@ -1,0 +1,15 @@
+{
+  "category": "Dropout",
+  "pythonClassName": "nn.Dropout",
+  "expr": "",
+  "params": {
+    "p": {
+      "type": "float",
+      "default": "0.5"
+    },
+    "inplace": {
+      "type": "bool",
+      "default": "False"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "category": "BCELoss",
+  "pythonClassName": "nn.BCELoss",
+  "expr": "",
+  "params": {
+    "weight": {
+      "type": "Tensor",
+      "default": "None"
+    },
+    "size_average": {
+      "type": "bool",
+      "default": "None"
+    },
+    "reduce": {
+      "type": "bool",
+      "default": "None"
+    },
+    "reduction": {
+      "type": "str",
+      "default": "mean"
+    }
+  }
+}

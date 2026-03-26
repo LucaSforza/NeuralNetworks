@@ -1,0 +1,6 @@
+{
+  "category": "Tanh",
+  "pythonClassName": "nn.Tanh",
+  "expr": "",
+  "params": {}
+}

@@ -1,0 +1,11 @@
+{
+  "category": "MSELoss",
+  "pythonClassName": "nn.MSELoss",
+  "expr": "",
+  "params": {
+    "reduction": {
+      "type": "str",
+      "default": "mean"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "category": "Linear",
+  "pythonClassName": "nn.Linear",
+  "expr": "",
+  "params": {
+    "in_features": {
+      "type": "int",
+      "default":"Undefined"
+    },
+    "out_features": {
+      "type": "int",
+      "default":"Undefined"
+    },
+    "bias": {
+      "type": "bool",
+      "default":"True"
+    },
+    "device": {
+      "type": "str",
+      "default":"None"
+    },
+    "dtype": {
+      "type": "str",
+      "default":"None"
+    }
+  }
+}
