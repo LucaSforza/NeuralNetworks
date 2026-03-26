@@ -1,15 +1,18 @@
-<script>
+<script lang="ts">
   import {
     SvelteFlow,
     Controls,
     Background,
     BackgroundVariant,
-    addEdge,
   } from "@xyflow/svelte";
 
   import "@xyflow/svelte/dist/style.css";
 
-  import { Diagram, VisualizeNode } from "$lib/utils.svelte";
+  import SLayer from "../lib/components/SLayer.svelte";
+  import SActivationFunction from "$lib/components/SActivationFunction.svelte";
+  import SConnection from "$lib/components/SConnection.svelte";
+  import { Diagram } from "$lib/diagram.svelte";
+  import { ENode } from "$lib/model/node";
 
   // SVELTE 5: Usiamo $state al posto di writable
   // let nodes = $state([]);
@@ -17,6 +20,9 @@
   //
   // let layerCounter = 1;
   // const generateId = () => `layer_${layerCounter++}`;
+
+  // L'elemento cliccato va evidenziato.
+  let selectedId = $state<string | null>(null);
 
   let d = new Diagram();
 
@@ -36,18 +42,35 @@
     d.addLayer();
   }
 
+  function deleteSelectedNode() {
+    if (selectedId) {
+      d.deleteNode(selectedId);
+
+      selectedId = null;
+    }
+  }
+
   // SVELTE 5: I parametri degli eventi vengono passati direttamente
-  function onconnect(connection) {
+  function onconnect(connection: any) {
     // TODO: use addEdge inside addConnection
     // edges = addEdge(connection, edges);
     d.addConnection(connection);
   }
 
+  function handleNodeClick({ event, node }: any) {
+    selectedId = node.id;
+  }
+
+  function handlePaneClick({ event }: any) {
+    selectedId = null;
+  }
+
   function exportToJson() {
     // Rimuoviamo il prefisso '$' usato per i writable
+    console.log(ENode.allNodes);
     const flowState = {
-      nodes: d.nodes,
-      edges: d.edges,
+      model: Object.fromEntries(ENode.allNodes),
+      view: { nodes: d.nodes, edges: d.edges },
     };
     const jsonString = JSON.stringify(flowState, null, 2);
     // TODO: salva in un file
@@ -56,17 +79,15 @@
     return jsonString;
   }
 
-  function importFromJson(jsonString) {
+  function importFromJson(jsonString: string) {
     try {
       const parsedData = JSON.parse(jsonString);
       d.nodes = parsedData.nodes || [];
       d.edges = parsedData.edges || [];
 
       if (d.nodes.length > 0) {
-        const ids = d.nodes.map(
-          (n) => parseInt(n.id.replace("node_", "")) || 0,
-        );
-        VisualizeNode.counter = Math.max(...ids) + 1;
+        const ids = d.nodes.map((n) => parseInt(n.id.replace("Node_", "")));
+        ENode.counter = Math.max(...ids) + 1;
       }
     } catch (error) {
       console.error("Errore durante il parsing del JSON:", error);
@@ -79,22 +100,43 @@
     importFromJson(dummyJson);
   }
 
-  // GESTIONE DELLA PAGINA
-  import SLayer from "../lib/components/SLayer.svelte";
+  function addActivationFunction() {
+    d.addActivationFunction();
+  }
 
-  const nodeTypes = { layer: SLayer };
+  // GESTIONE DELLA PAGINA
+
+  const nodeTypes = { layer: SLayer, activationFunction: SActivationFunction };
+  const edgeTypes = { connection: SConnection };
 </script>
 
 <div class="app-container">
   <div class="toolbar">
     <button onclick={addLayer}>➕ Aggiungi Layer</button>
+    <button onclick={addActivationFunction}>
+      ➕ Aggiungi Activation Function
+    </button>
+    <button
+      onclick={deleteSelectedNode}
+      disabled={!selectedId}
+      class:danger={selectedId !== null}>❌ Elimina</button
+    >
     <div class="divider"></div>
     <button onclick={exportToJson}>💾 Esporta JSON</button>
     <button onclick={testImport}>📂 Testa Import JSON</button>
   </div>
 
   <div class="flow-wrapper">
-    <SvelteFlow bind:nodes={d.nodes} bind:edges={d.edges} {nodeTypes} fitView>
+    <SvelteFlow
+      bind:nodes={d.nodes}
+      edges={d.edges}
+      {nodeTypes}
+      {edgeTypes}
+      fitView
+      onnodeclick={handleNodeClick}
+      onpaneclick={handlePaneClick}
+      {onconnect}
+    >
       <Controls />
       <Background variant={BackgroundVariant.Dots} />
     </SvelteFlow>
@@ -134,5 +176,22 @@
   .flow-wrapper {
     flex-grow: 1;
     width: 100%;
+  }
+
+  /* When the delete button is disabled*/
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* When the delete button is enabled*/
+  button.danger {
+    color: #dc2626;
+    /*border-color: #dc2626;*/
+  }
+
+  /* When the delete button is enabled and hovered */
+  button.danger:hover {
+    background: #fef2f2;
   }
 </style>
