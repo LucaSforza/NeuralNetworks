@@ -8,7 +8,11 @@
 
   import "@xyflow/svelte/dist/style.css";
 
-  import { ActivationFunction, Diagram, ENode, Layer } from "$lib/utils.svelte";
+  import SLayer from "../lib/components/SLayer.svelte";
+  import SActivationFunction from "$lib/components/SActivationFunction.svelte";
+  import SConnection from "$lib/components/SConnection.svelte";
+  import { Diagram } from "$lib/diagram.svelte";
+  import { ENode } from "$lib/model/node";
 
   // SVELTE 5: Usiamo $state al posto di writable
   // let nodes = $state([]);
@@ -101,9 +105,6 @@
   }
 
   // GESTIONE DELLA PAGINA
-  import SLayer from "../lib/components/SLayer.svelte";
-  import SActivationFunction from "$lib/components/SActivationFunction.svelte";
-  import SConnection from "$lib/components/SConnection.svelte";
 
   const nodeTypes = { layer: SLayer, activationFunction: SActivationFunction };
   const edgeTypes = { connection: SConnection };
