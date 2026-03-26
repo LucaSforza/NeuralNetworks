@@ -1,0 +1,31 @@
+{
+  "category": "LayerNorm",
+  "pythonClassName": "nn.LayerNorm",
+  "expr": "",
+  "params": {
+    "normalized_shape": {
+      "type": "int | tuple",
+      "default": "Undefined"
+    },
+    "eps": {
+      "type": "float",
+      "default": "1e-05"
+    },
+    "elementwise_affine": {
+      "type": "bool",
+      "default": "True"
+    },
+    "bias": {
+      "type": "bool",
+      "default": "True"
+    },
+    "device": {
+      "type": "str",
+      "default": "None"
+    },
+    "dtype": {
+      "type": "str",
+      "default": "None"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "category": "Softmax",
+  "pythonClassName": "nn.Softmax",
+  "expr": "",
+  "params": {
+    "dim": {
+      "type": "int",
+      "default": "None"
+    }
+  }
+}

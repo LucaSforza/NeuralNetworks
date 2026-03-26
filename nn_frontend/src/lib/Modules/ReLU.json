@@ -1,0 +1,11 @@
+{
+  "category": "ReLU",
+  "pythonClassName": "nn.ReLU",
+  "expr": "",
+  "params": {
+    "inplace": {
+      "type": "bool",
+      "default":"False"
+    }
+  }
+}
