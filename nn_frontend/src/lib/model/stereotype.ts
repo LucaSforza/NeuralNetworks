@@ -1,12 +1,28 @@
-class Stereotype {
-  public file_path: string;
+export interface ModuleParameter {
+  type: string;
+  default: string;
+}
 
-  constructor(file_path: string) {
-    this.file_path = file_path;
-  }
+export class Stereotype {
+  public file_path: string;
+  public category: string = "";
+  public pythonClassName: string = "";
+  public expr: string = "";
+  public parameters: Record<string, ModuleParameter> = {};
+
+constructor(file_path: string, data: any) {
+  this.file_path = file_path;
+  this.loadFromData(data);
+}
+
+private loadFromData(data: any): void {
+  this.category = data.category || "";
+  this.pythonClassName = data.pythonClassName || "";
+  this.expr = data.expr || "";
+  this.parameters = data.params || {};
+}
 
   getExpr(): string {
-    // TODO: ritorna il contenuto del file
-    return "";
+    return this.expr;
   }
 }

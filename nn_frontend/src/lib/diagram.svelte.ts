@@ -2,14 +2,23 @@ import { Module } from "./model/module";
 import { ENode } from "./model/node";
 import { VConnection } from "./view/connection";
 import { VNode } from "./view/node";
+import { Stereotype } from "./model/stereotype";
 
 export class Diagram {
-
+  public stereotypes: Array<Stereotype> = [];
   public nodes: Array<VNode> = $state([]);
   public edges: Array<any> = $state([]);
 
-  constructor() {
-  }
+constructor() {
+  const moduleFiles = import.meta.glob('./Modules/*.json', { eager: true });
+
+  console.log("Files found:", Object.keys(moduleFiles));
+
+  this.stereotypes = Object.entries(moduleFiles).map(([path, data]) => {
+    const content = (data as any).default || data;
+    return new Stereotype(path, content);
+  });
+}
 
   public addLayer() {
     const l = new Module("layer");
